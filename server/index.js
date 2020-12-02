@@ -30,6 +30,21 @@ app.get('/api/products', (req, res, next) => {
     .catch(err => next(err));
 });
 
+app.get('/api/products/:productId', (req, res, next) => {
+  const query = `select "productId",
+                        "name",
+                        "price",
+                        "image",
+                        "shortDescription",
+                        "longDescription"
+                  from  "products"
+                  where "productId" = $1`;
+  const values = [req.params.productId];
+  db.query(query, values)
+    .then(result => res.status(200).json(result.rows[0]))
+    .catch(err => next(err));
+});
+
 app.use('/api', (req, res, next) => {
   next(new ClientError(`cannot ${req.method} ${req.originalUrl}`, 404));
 });
