@@ -7,9 +7,14 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      view: {
+        name: 'catalog',
+        params: {}
+      },
       message: null,
       isLoading: true
     };
+    this.setView = this.setView.bind(this);
   }
 
   componentDidMount() {
@@ -20,13 +25,27 @@ export default class App extends React.Component {
       .finally(() => this.setState({ isLoading: false }));
   }
 
+  setView(name, params) {
+    const view = { name, params };
+    this.setState({ view });
+  }
+
+  getView() {
+    const { view } = this.state;
+    switch (view.name) {
+      case 'catalog':
+        return <ProductList setView={this.setView} />;
+      case 'details':
+        return <ProductDetails params={this.state.view.params} />;
+    }
+  }
+
   render() {
     return (
       <>
         <Header />
         <div className="container">
-          <ProductList />
-          <ProductDetails productId={1} />
+          {this.getView()}
         </div>
       </>
     );

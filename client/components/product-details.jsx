@@ -9,7 +9,7 @@ export default class ProductDetails extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`/api/products/${this.props.productId}`)
+    fetch(`/api/products/${this.props.params.productId}`)
       .then(res => res.json())
       .then(product => this.setState({ product }));
   }
@@ -24,7 +24,7 @@ export default class ProductDetails extends React.Component {
             <div className="col-12 p-3">
               <button className="btn btn-secondary">
                 <i className="fas fa-arrow-left mr-2"></i>
-                Back To List
+                Back To Catalog
               </button>
             </div>
             <img className="product-image col-5" src={product.image} alt={product.name} />
