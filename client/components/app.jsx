@@ -26,8 +26,8 @@ export default class App extends React.Component {
         <Header />
         <div className="container">
           <ProductList />
+          <ProductDetails productId={1} />
         </div>
-        <ProductDetails productId={1} />
       </>
     );
   }
