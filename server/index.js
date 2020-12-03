@@ -68,7 +68,7 @@ app.get('/api/cart', (req, res, next) => {
 
 app.post('/api/cart', (req, res, next) => {
   const POSITIVE_INT_REGEXP = /^[1-9]\d*$/;
-  if (!POSITIVE_INT_REGEXP.test(req.body.productId)) return res.status(500).json({ error: 'productId must be a positive integer' });
+  if (!POSITIVE_INT_REGEXP.test(req.body.productId)) return next(new ClientError('productId must be a positive integer', 400));
 
   const query = `select "price"
                   from  "products"
@@ -76,10 +76,10 @@ app.post('/api/cart', (req, res, next) => {
   const values = [req.body.productId];
   db.query(query, values)
     .then(result => {
-      if (!result.rows.length) return next(new ClientError('No products found matching provided ID', 400));
+      if (!result.rows.length) throw new ClientError('No products found matching provided ID', 400);
       const { price } = result.rows[0];
       return (
-        getCart(req, db)
+        getCart(req.session, db)
           .then(result => {
             const { cartId } = result;
             return { cartId, price };
@@ -109,7 +109,6 @@ app.post('/api/cart', (req, res, next) => {
           })
       );
     })
-    .then()
     .catch(err => next(err));
 });
 

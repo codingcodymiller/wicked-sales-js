@@ -1,5 +1,5 @@
-function getCart(req, db) {
-  const { cartId } = req.session;
+function getCart(session, db) {
+  const { cartId } = session;
   if (!cartId) {
     return (
       db.query(`insert into "carts" ("cartId", "createdAt")
