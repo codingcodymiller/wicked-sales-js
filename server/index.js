@@ -5,6 +5,7 @@ const db = require('./database');
 const ClientError = require('./client-error');
 const staticMiddleware = require('./static-middleware');
 const sessionMiddleware = require('./session-middleware');
+const { getCart } = require('./helpers');
 
 const app = express();
 
@@ -49,7 +50,67 @@ app.get('/api/products/:productId', (req, res, next) => {
 });
 
 app.get('/api/cart', (req, res, next) => {
-  res.status(200).json(JSON.stringify([]));
+  if (!req.session.cartId) return res.status(200).json([]);
+
+  const query = `select "c"."cartItemId",
+                        "c"."price",
+                        "p"."productId",
+                        "p"."image",
+                        "p"."name",
+                        "p"."shortDescription"
+                  from  "cartItems" as "c"
+                  join  "products" as "p" using ("productId")
+                  where "c"."cartId" = $1`;
+  const values = [req.session.cartId];
+  db.query(query, values)
+    .then(result => res.status(200).json(result.rows));
+});
+
+app.post('/api/cart', (req, res, next) => {
+  const POSITIVE_INT_REGEXP = /^[1-9]\d*$/;
+  if (!POSITIVE_INT_REGEXP.test(req.body.productId)) return res.status(500).json({ error: 'productId must be a positive integer' });
+
+  const query = `select "price"
+                  from  "products"
+                  where "productId" = $1`;
+  const values = [req.body.productId];
+  db.query(query, values)
+    .then(result => {
+      if (!result.rows.length) return next(new ClientError('No products found matching provided ID', 400));
+      const { price } = result.rows[0];
+      return (
+        getCart(req, db)
+          .then(result => {
+            const { cartId } = result;
+            return { cartId, price };
+          })
+          .then(cartData => {
+            const { price, cartId } = cartData;
+            req.session.cartId = cartId;
+            const query = `insert into "cartItems" ("cartId", "productId", "price")
+                            values ($1, $2, $3)
+                            returning "cartItemId"`;
+            const values = [cartId, req.body.productId, price];
+            return db.query(query, values)
+              .then(result => {
+                const query = `select "c"."cartItemId",
+                                      "c"."price",
+                                      "p"."productId",
+                                      "p"."image",
+                                      "p"."name",
+                                      "p"."shortDescription"
+                              from "cartItems" as "c"
+                              join "products" as "p" using ("productId")
+                              where "c"."cartItemId" = $1`;
+                const values = [result.rows[0].cartItemId];
+                db.query(query, values)
+                  .then(result => res.status(201).json(result.rows[0]));
+              });
+          })
+      );
+    })
+    .then()
+    .catch(err => next(err));
 });
 
 app.use('/api', (req, res, next) => {
