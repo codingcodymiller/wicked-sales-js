@@ -22,7 +22,7 @@ export default class ProductDetails extends React.Component {
         <div className="card col-12 mt-3">
           <div className="card-body d-flex flex-wrap">
             <div className="col-12 p-3">
-              <button className="btn btn-secondary">
+              <button className="btn btn-secondary" onClick={() => this.props.setView('catalog', {})}>
                 <i className="fas fa-arrow-left mr-2"></i>
                 Back To Catalog
               </button>
@@ -32,6 +32,9 @@ export default class ProductDetails extends React.Component {
               <h4>{product.name}</h4>
               <p className="text-secondary">{`$${(Number(product.price) / 100).toFixed(2)}`}</p>
               <p>{product.shortDescription}</p>
+              <button className="btn btn-primary" onClick={() => this.props.addToCart(product)}>
+                Add To Cart
+              </button>
             </div>
             <div className="col-12 mt-4">{product.longDescription}</div>
           </div>
