@@ -2,6 +2,7 @@ import React from 'react';
 import CartSummaryItem from './cart-summary-item';
 
 export default function CartSummary(props) {
+  const totalPrice = props.cart.reduce((total, item) => total + item.price, 0) / 100;
   const cartItems = props.cart.map(item => <CartSummaryItem key={item.cartItemId} item={item} />);
   return (
     <div className="row">
@@ -14,6 +15,9 @@ export default function CartSummary(props) {
       </div>
       <div className="col-12 p-3">
         {cartItems}
+      </div>
+      <div className="col-12 p-3">
+        <h2>{`Total Price: $${totalPrice}`}</h2>
       </div>
     </div>
   );
