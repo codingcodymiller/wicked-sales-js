@@ -1,8 +1,8 @@
 import React from 'react';
 
-function ProductListItem({ product }) {
+function ProductListItem({ product, setView }) {
   return (
-    <div className="card" onClick={() => this.props.setView({ name: 'details', params: { productId: product.productId } })}>
+    <div className="card pointer h-100" onClick={() => setView('details', { productId: product.productId })}>
       <img className="card-img-top product-image" src={product.image} alt={product.name} />
       <div className="card-body">
         <h4>{product.name}</h4>

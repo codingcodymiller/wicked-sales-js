@@ -11,18 +11,37 @@ export default class App extends React.Component {
         name: 'catalog',
         params: {}
       },
-      message: null,
-      isLoading: true
+      cart: []
     };
     this.setView = this.setView.bind(this);
+    this.addToCart = this.addToCart.bind(this);
   }
 
   componentDidMount() {
-    fetch('/api/health-check')
+    this.getCartItems();
+  }
+
+  getCartItems() {
+    fetch('/api/cart')
       .then(res => res.json())
-      .then(data => this.setState({ message: data.message || data.error }))
-      .catch(err => this.setState({ message: err.message }))
-      .finally(() => this.setState({ isLoading: false }));
+      .then(cart => this.setState({ cart }));
+  }
+
+  addToCart(product) {
+    const config = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(product)
+    };
+    fetch('/api/cart', config)
+      .then(res => res.json())
+      .then(item => {
+        this.setState({
+          cart: [...this.state.cart, item]
+        });
+      });
   }
 
   setView(name, params) {
@@ -36,14 +55,14 @@ export default class App extends React.Component {
       case 'catalog':
         return <ProductList setView={this.setView} />;
       case 'details':
-        return <ProductDetails params={this.state.view.params} />;
+        return <ProductDetails params={this.state.view.params} setView={this.setView} addToCart={this.addToCart} />;
     }
   }
 
   render() {
     return (
       <>
-        <Header />
+        <Header cartItemCount={this.state.cart.length} setView={this.setView} />
         <div className="container">
           {this.getView()}
         </div>
