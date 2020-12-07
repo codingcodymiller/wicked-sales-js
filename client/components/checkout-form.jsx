@@ -53,7 +53,7 @@ export default class CheckoutForm extends React.Component {
             </div>
             <div className="form-group d-flex justify-content-end">
               <button type="reset" className="btn btn-danger mx-1">Cancel</button>
-              <button type="submit" className="btn btn-primary mx-1">Save Card</button>
+              <button type="submit" className="btn btn-primary mx-1">Submit</button>
             </div>
           </form>
         </div>

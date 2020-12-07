@@ -18,8 +18,9 @@ export default function CartSummary(props) {
       <div className="col-12 p-3">
         {cartItems}
       </div>
-      <div className="col-12 p-3">
+      <div className="col-12 p-3 d-flex justify-content-between">
         <h2>{`Total Price: $${totalPrice}`}</h2>
+        <button className="btn btn-primary" onClick={() => props.setView('checkout', {})}>Checkout</button>
       </div>
     </div>
   );
