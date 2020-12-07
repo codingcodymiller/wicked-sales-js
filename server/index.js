@@ -127,6 +127,11 @@ app.post('/api/cart', (req, res, next) => {
     .catch(err => next(err));
 });
 
+app.post('/api/orders', (req, res, next) => {
+  if (!req.session.cartId) return next(new ClientError('A shopping cart id must be provided in order to complete an order.', 400));
+
+});
+
 app.use('/api', (req, res, next) => {
   next(new ClientError(`cannot ${req.method} ${req.originalUrl}`, 404));
 });
