@@ -2,7 +2,7 @@ import React from 'react';
 
 function Header(props) {
   return (
-    <nav className="navbar navbar-dark bg-dark justify-content-between">
+    <nav className="navbar navbar-dark bg-dark justify-content-between mb-3">
       <span className="navbar-brand">
         <i className="fas fa-lg fa-book-dead mx-2"></i>
         Wicked Sales

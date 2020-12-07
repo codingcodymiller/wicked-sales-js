@@ -19,7 +19,7 @@ export default class ProductDetails extends React.Component {
     if (!product) return <h1>Loading...</h1>;
     return (
       <div className="row">
-        <div className="card col-12 mt-3">
+        <div className="card col-12">
           <div className="card-body d-flex flex-wrap">
             <div className="col-12 p-3">
               <button className="btn btn-secondary" onClick={() => this.props.setView('catalog', {})}>

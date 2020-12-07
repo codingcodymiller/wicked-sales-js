@@ -3,6 +3,7 @@ import Header from './header';
 import ProductList from './product-list';
 import ProductDetails from './product-details';
 import CartSummary from './cart-summary';
+import CheckoutForm from './checkout-form';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -16,6 +17,8 @@ export default class App extends React.Component {
     };
     this.setView = this.setView.bind(this);
     this.addToCart = this.addToCart.bind(this);
+    this.getCartTotalPrice = this.getCartTotalPrice.bind(this);
+    this.placeOrder = this.placeOrder.bind(this);
   }
 
   componentDidMount() {
@@ -26,6 +29,10 @@ export default class App extends React.Component {
     fetch('/api/cart')
       .then(res => res.json())
       .then(cart => this.setState({ cart }));
+  }
+
+  getCartTotalPrice() {
+    return this.state.cart.reduce((total, item) => total + item.price, 0) / 100;
   }
 
   addToCart(product) {
@@ -45,6 +52,27 @@ export default class App extends React.Component {
       });
   }
 
+  placeOrder(checkoutInfo) {
+    const config = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(checkoutInfo)
+    };
+    fetch('/api/orders', config)
+      .then(res => res.json())
+      .then(orderData => {
+        this.setState({
+          cart: [],
+          view: {
+            name: 'catalog',
+            params: {}
+          }
+        });
+      });
+  }
+
   setView(name, params) {
     const view = { name, params };
     this.setState({ view });
@@ -58,7 +86,9 @@ export default class App extends React.Component {
       case 'details':
         return <ProductDetails params={this.state.view.params} setView={this.setView} addToCart={this.addToCart} />;
       case 'cart':
-        return <CartSummary setView={this.setView} cart={this.state.cart} />;
+        return <CartSummary setView={this.setView} cart={this.state.cart} cartTotalPrice={this.getCartTotalPrice()} />;
+      case 'checkout':
+        return <CheckoutForm setView={this.setView} placeOrder={this.placeOrder} cartTotalPrice={this.getCartTotalPrice()} />;
     }
   }
 
