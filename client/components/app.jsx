@@ -45,6 +45,27 @@ export default class App extends React.Component {
       });
   }
 
+  placeOrder(checkoutInfo) {
+    const config = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(checkoutInfo)
+    };
+    fetch('/api/orders', config)
+      .then(res => res.json())
+      .then(orderData => {
+        this.setState({
+          cart: [],
+          view: {
+            name: 'catalog',
+            params: {}
+          }
+        });
+      });
+  }
+
   setView(name, params) {
     const view = { name, params };
     this.setState({ view });
