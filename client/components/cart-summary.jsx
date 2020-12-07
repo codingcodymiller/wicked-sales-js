@@ -4,7 +4,7 @@ import CartSummaryItem from './cart-summary-item';
 export default function CartSummary(props) {
   if (!props.cart.length) return <h1 className="row">No items currently added to cart :(</h1>;
 
-  const totalPrice = props.getCartTotalPrice();
+  const { cartTotalPrice } = this.props;
   const cartItems = props.cart.map(item => <CartSummaryItem key={item.cartItemId} item={item} />);
   return (
     <div className="row">
@@ -19,7 +19,7 @@ export default function CartSummary(props) {
         {cartItems}
       </div>
       <div className="col-12 p-3 d-flex justify-content-between">
-        <h2>{`Total Price: $${totalPrice}`}</h2>
+        <h2>{`Total Price: $${cartTotalPrice}`}</h2>
         <button className="btn btn-primary" onClick={() => props.setView('checkout', {})}>Checkout</button>
       </div>
     </div>

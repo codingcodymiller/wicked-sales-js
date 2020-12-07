@@ -35,14 +35,14 @@ export default class CheckoutForm extends React.Component {
   }
 
   render() {
-    const totalPrice = this.props.getCartTotalPrice();
+    const { cartTotalPrice } = this.props;
     return (
       <div className="row">
         <div className="col-12 p-3">
           <form onSubmit={this.handleSubmit} onReset={this.reset}>
             <div className="form-text">
               <h1>Checkout</h1>
-              <h4 className="text-secondary">{`Order Total: $${totalPrice}`}</h4>
+              <h4 className="text-secondary">{`Order Total: $${cartTotalPrice}`}</h4>
             </div>
             <div className="form-group">
               <label htmlFor="name">Name</label>
