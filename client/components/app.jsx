@@ -3,6 +3,7 @@ import Header from './header';
 import ProductList from './product-list';
 import ProductDetails from './product-details';
 import CartSummary from './cart-summary';
+import CheckoutForm from './checkout-form';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -80,6 +81,8 @@ export default class App extends React.Component {
         return <ProductDetails params={this.state.view.params} setView={this.setView} addToCart={this.addToCart} />;
       case 'cart':
         return <CartSummary setView={this.setView} cart={this.state.cart} />;
+      case 'checkout':
+        return <CheckoutForm placeOrder={this.placeOrder} />;
     }
   }
 
