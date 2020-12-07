@@ -9,7 +9,7 @@ function Header(props) {
       </span>
       <ul className="navbar-nav">
         <li className="nav-item">
-          <span className="nav-link d-flex align-items-center pointer">
+          <span className="nav-link d-flex align-items-center pointer" onClick={() => props.setView('cart', {})}>
             <i className="fas fa-shopping-cart mx-2"></i>
             <span className="badge badge-light">{props.cartItemCount}</span>
           </span>
