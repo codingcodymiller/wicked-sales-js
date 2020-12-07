@@ -127,6 +127,27 @@ app.post('/api/cart', (req, res, next) => {
     .catch(err => next(err));
 });
 
+app.post('/api/orders', (req, res, next) => {
+  const { cartId } = req.session;
+  if (!cartId) return next(new ClientError('A shopping cart id must be provided in order to complete an order.', 400));
+
+  const { name, creditCard, shippingAddress } = req.body;
+  if (!name || !creditCard || !shippingAddress) return next(new ClientError('A name, credit card, and shpping address must be provided in order to complete an order.', 400));
+
+  const query = `
+    insert into "orders" ("cartId", "name", "creditCard", "shippingAddress")
+    values               ($1, $2, $3, $4)
+    returning            "orderId", "name", "creditCard", "shippingAddress", "createdAt"
+  `;
+  const values = [cartId, name, creditCard, shippingAddress];
+  db.query(query, values)
+    .then(result => {
+      delete req.session.cartId;
+      res.status(201).json(result.rows[0]);
+    })
+    .catch(err => next(err));
+});
+
 app.use('/api', (req, res, next) => {
   next(new ClientError(`cannot ${req.method} ${req.originalUrl}`, 404));
 });
