@@ -4,7 +4,7 @@ import CartSummaryItem from './cart-summary-item';
 export default function CartSummary(props) {
   if (!props.cart.length) return <h1 className="row">No items currently added to cart :(</h1>;
 
-  const totalPrice = props.cart.reduce((total, item) => total + item.price, 0) / 100;
+  const totalPrice = props.getCartTotalPrice();
   const cartItems = props.cart.map(item => <CartSummaryItem key={item.cartItemId} item={item} />);
   return (
     <div className="row">

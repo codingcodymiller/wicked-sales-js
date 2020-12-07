@@ -17,6 +17,8 @@ export default class App extends React.Component {
     };
     this.setView = this.setView.bind(this);
     this.addToCart = this.addToCart.bind(this);
+    this.getCartTotalPrice = this.getCartTotalPrice.bind(this);
+    this.placeOrder = this.placeOrder.bind(this);
   }
 
   componentDidMount() {
@@ -27,6 +29,10 @@ export default class App extends React.Component {
     fetch('/api/cart')
       .then(res => res.json())
       .then(cart => this.setState({ cart }));
+  }
+
+  getCartTotalPrice() {
+    return this.state.cart.reduce((total, item) => total + item.price, 0) / 100;
   }
 
   addToCart(product) {
@@ -80,9 +86,9 @@ export default class App extends React.Component {
       case 'details':
         return <ProductDetails params={this.state.view.params} setView={this.setView} addToCart={this.addToCart} />;
       case 'cart':
-        return <CartSummary setView={this.setView} cart={this.state.cart} />;
+        return <CartSummary setView={this.setView} cart={this.state.cart} getCartTotalPrice={this.getCartTotalPrice} />;
       case 'checkout':
-        return <CheckoutForm placeOrder={this.placeOrder} />;
+        return <CheckoutForm placeOrder={this.placeOrder} getCartTotalPrice={this.getCartTotalPrice} />;
     }
   }
 
